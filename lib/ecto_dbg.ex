@@ -41,10 +41,9 @@ defmodule EctoDbg do
   * `:level` - Specifies the log level for when the SQL query is logged (default: `:debug`).
 
   * `:logger_function` - Specifies the module+function that will be invoked when logging an SQL query.
-                         The provided module+function must have an arity of 4 and accept the following
-                         parameters: `repo, action, formatted_sql, opts` where opts are the options that
-                         were passed to the `use EctoDbg` macro. The default value
-                         is: `{EctoDbg, :default_logger}`).
+    The provided module+function must have an arity of 4 and accept the following
+    parameters: `repo, action, formatted_sql, opts` where opts are the options that
+    were passed to the `use EctoDbg` macro. The default value is: `{EctoDbg, :default_logger}`.
   """
   defmacro __using__(opts \\ []) do
     default_opts = [

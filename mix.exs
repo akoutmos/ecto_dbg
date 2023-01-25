@@ -62,7 +62,7 @@ defmodule EctoDbg.MixProject do
     [
       main: "readme",
       source_ref: "master",
-      logo: "guides/images/logo.svg",
+      logo: "guides/images/logo.png",
       extras: [
         "README.md"
       ]

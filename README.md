@@ -39,7 +39,7 @@ dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:ecto_dbg, "~> 0.1.0"}
+    {:ecto_dbg, "~> 0.1.0", only: [:dev, :test]}
   ]
 end
 ```
@@ -73,8 +73,8 @@ Checkout my [GitHub Sponsorship page](https://github.com/sponsors/akoutmos) if y
 
 ## Setting Up EctoDbg
 
-After adding `{:ecto_dbg, "~> 0.1.0"}` in your `mix.exs` file and running `mix deps.get`, open your `repo.ex`
-file and add the following contents:
+After adding `{:ecto_dbg, "~> 0.1.0", only: [:test, :dev]}` in your `mix.exs` file and running
+`mix deps.get`, open your `repo.ex` file and add the following contents:
 
 ```elixir
 defmodule MyApp.Repo do
