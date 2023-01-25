@@ -54,7 +54,10 @@ defmodule EctoDbg.MixProject do
       {:excoveralls, "~> 0.15.3", only: :test, runtime: false},
       {:credo, "~> 1.6.1", only: :dev},
       {:dialyxir, "~> 1.2.0", only: :dev, runtime: false},
-      {:git_hooks, "~> 0.7.3", only: [:test, :dev], runtime: false}
+      {:git_hooks, "~> 0.7.3", only: [:test, :dev], runtime: false},
+
+      # Test dependencies
+      {:ecto_sqlite3, "~> 0.9.1", only: [:test]}
     ]
   end
 
