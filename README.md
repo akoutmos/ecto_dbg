@@ -1,5 +1,5 @@
 <p align="center">
-  <img align="center" width="25%" src="guides/images/logo.svg" alt="EctoDbg Elixir Logo">
+  <img align="center" width="25%" src="guides/images/logo.png" alt="EctoDbg Elixir Logo">
   <img align="center" width="50%" src="guides/images/logo_name.png" alt="EctoDbg title">
 </p>
 
