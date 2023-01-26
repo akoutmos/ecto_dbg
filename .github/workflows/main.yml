@@ -50,6 +50,7 @@ jobs:
     name: Run ExUnit tests
     runs-on: ubuntu-latest
     container:
+      image: hexpm/elixir:1.13.3-erlang-24.2-ubuntu-jammy-20220428
       options: --user root
 
     strategy:
