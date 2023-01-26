@@ -63,6 +63,9 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+      - name: Install packages
+        run: |
+          sudo apt install wget
       - name: Set up Elixir
         env:
           ImageOS: ubuntu22
