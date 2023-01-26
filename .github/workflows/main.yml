@@ -89,4 +89,5 @@ jobs:
         run:  |
           adduser --disabled-password --gecos '' newuser
           chown -R newuser:newuser .
+          mix local.hex --force
           su -c "mix coveralls.github" newuser
