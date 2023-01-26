@@ -77,4 +77,7 @@ jobs:
         shell: sh
         env:
           MIX_ENV: test
-        run: mix coveralls.github
+        run:  |
+          adduser --disabled-password --gecos '' newuser
+          chown -R newuser:newuser .
+          su -c "mix coveralls.github" newuser
