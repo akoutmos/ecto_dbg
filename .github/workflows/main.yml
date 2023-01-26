@@ -53,9 +53,23 @@ jobs:
       image: hexpm/elixir:1.13.3-erlang-24.2-ubuntu-jammy-20220428
       options: --user root
 
+    strategy:
+      matrix:
+        elixir:
+          - '1.13.3'
+        otp:
+          - '24.2'
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+      - name: Set up Elixir
+        end:
+          ImageOS: ubuntu22
+        uses: erlef/setup-elixir@v1
+        with:
+          elixir-version: ${{ matrix.elixir }}
+          otp-version: ${{ matrix.otp }}
       - name: Restore dependencies cache
         uses: actions/cache@v2
         with:
