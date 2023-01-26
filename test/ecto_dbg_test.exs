@@ -51,6 +51,32 @@ defmodule EctoDbgTest do
 
       assert_formatted_sql(query, :all, expected_sql)
     end
+
+    test "should return the correct SQL when a fragment is used" do
+      TestRepo.insert!(%Account{name: "hi"})
+
+      query =
+        from account in Account,
+          left_join: products in assoc(account, :products),
+          where: fragment("? like ?", account.name, ^"%hi%"),
+          or_where: fragment("? like ?", account.name, ^"%bye%")
+
+      expected_sql = """
+      SELECT
+          a0."id",
+          a0."name",
+          a0."email",
+          a0."inserted_at",
+          a0."updated_at"
+      FROM
+          "accounts" AS a0
+          LEFT OUTER JOIN "products" AS p1 ON p1."account_id" = a0."id"
+      WHERE (a0.\"name\" LIKE '%hi%')
+          OR (a0.\"name\" LIKE '%bye%')
+      """
+
+      assert_formatted_sql(query, :all, expected_sql)
+    end
   end
 
   defp assert_formatted_sql(query, action, expected_sql) do

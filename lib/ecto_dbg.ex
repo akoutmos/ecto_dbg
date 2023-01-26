@@ -17,6 +17,9 @@ defmodule EctoDbg do
 
   require Logger
 
+  alias Ecto.Adapters.SQL
+  alias Ecto.DevLogger.PrintableParameter
+
   @doc """
   By using this macro in your Repo module, you will get 6 additional functions added
   to your repo module. This functions are:
@@ -84,7 +87,7 @@ defmodule EctoDbg do
 
   @doc false
   def log_query(repo, action, dbg_opts, query) do
-    {binary_query, params} = Ecto.Adapters.SQL.to_sql(action, repo, query)
+    {binary_query, params} = SQL.to_sql(action, repo, query)
 
     # Generate a formatted query
     formatted_sql =
@@ -160,12 +163,37 @@ defmodule EctoDbg do
       <<_prefix::utf8, index::binary>> = replacement ->
         case Map.fetch(params_by_index, String.to_integer(index)) do
           {:ok, value} ->
-            Ecto.DevLogger.PrintableParameter.to_expression(value)
+            PrintableParameter.to_expression(value)
 
           :error ->
             replacement
         end
     end)
+  end
+
+  def inline_params(query, params, Ecto.Adapters.SQLite3) do
+    params_by_index =
+      params
+      |> Enum.with_index()
+      |> Map.new(fn {value, index} -> {index, value} end)
+
+    query
+    |> String.split("?")
+    |> Enum.map_reduce(0, fn elem, index ->
+      formatted_value =
+        case Map.fetch(params_by_index, index) do
+          {:ok, value} ->
+            PrintableParameter.to_expression(value)
+
+          :error ->
+            []
+        end
+
+      {[elem, formatted_value], index + 1}
+    end)
+    |> elem(0)
+    |> List.flatten()
+    |> Enum.join()
   end
 
   def inline_params(query, params, Ecto.Adapters.MyXQL) do
@@ -180,7 +208,7 @@ defmodule EctoDbg do
       formatted_value =
         case Map.fetch(params_by_index, index) do
           {:ok, value} ->
-            Ecto.DevLogger.PrintableParameter.to_expression(value)
+            PrintableParameter.to_expression(value)
 
           :error ->
             []
