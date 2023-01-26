@@ -64,7 +64,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
       - name: Set up Elixir
-        end:
+        env:
           ImageOS: ubuntu22
         uses: erlef/setup-elixir@v1
         with:
