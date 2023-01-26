@@ -10,6 +10,7 @@ if Mix.env() != :prod do
           {:cmd, "mix format --check-formatted"},
           {:cmd, "mix compile --warnings-as-errors"},
           {:cmd, "mix credo --strict"},
+          {:cmd, "mix doctor"},
           {:cmd, "mix test"}
         ]
       ]

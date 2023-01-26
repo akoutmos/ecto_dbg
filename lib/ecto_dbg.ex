@@ -57,28 +57,45 @@ defmodule EctoDbg do
     dbg_opts = Keyword.merge(default_opts, opts)
 
     quote do
-      # The following functions log the query and also execute it
+      @doc """
+      Run the `Repo.all` function and also log the raw SQL query.
+      """
       def all_and_log(query, query_opts \\ []) do
         EctoDbg.run_and_log_query(__MODULE__, :all, unquote(dbg_opts), query, query_opts)
       end
 
+      @doc """
+      Run the `Repo.update_all` function and also log the raw SQL query.
+      """
       def update_all_and_log(query, query_opts \\ []) do
         EctoDbg.run_and_log_query(__MODULE__, :update_all, unquote(dbg_opts), query, query_opts)
       end
 
+      @doc """
+      Run the `Repo.delete_all` function and also log the raw SQL query.
+      """
       def delete_all_and_log(query, query_opts \\ []) do
         EctoDbg.run_and_log_query(__MODULE__, :delete_all, unquote(dbg_opts), query, query_opts)
       end
 
+      @doc """
+      Log the raw SQL query that would be passed to the `Repo.all` function.
+      """
       # The following functions only log the query and do not run it
       def log_all_query(query) do
         EctoDbg.log_query(__MODULE__, :all, unquote(dbg_opts), query)
       end
 
+      @doc """
+      Log the raw SQL query that would be passed to the `Repo.update_all` function.
+      """
       def log_update_all_query(query) do
         EctoDbg.log_query(__MODULE__, :update_all, unquote(dbg_opts), query)
       end
 
+      @doc """
+      Log the raw SQL query that would be passed to the `Repo.delete_all` function.
+      """
       def log_delete_all_query(query) do
         EctoDbg.log_query(__MODULE__, :delete_all, unquote(dbg_opts), query)
       end

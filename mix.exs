@@ -50,6 +50,7 @@ defmodule EctoDbg.MixProject do
       {:erlexec, "~> 2.0"},
 
       # Development dependencies
+      {:doctor, "~> 0.21.0", only: :dev},
       {:ex_doc, "~> 0.29.1", only: :dev},
       {:excoveralls, "~> 0.15.3", only: :test, runtime: false},
       {:credo, "~> 1.6.1", only: :dev},
