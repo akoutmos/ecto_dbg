@@ -49,9 +49,6 @@ jobs:
   unit_test:
     name: Run ExUnit tests
     runs-on: ubuntu-latest
-    container:
-      image: hexpm/elixir:1.13.3-erlang-24.2-ubuntu-jammy-20220428
-      options: --user root
 
     strategy:
       matrix:
@@ -63,14 +60,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Install packages
-        run: |
-          apt-get update
-          apt-get install wget unzip -y
       - name: Set up Elixir
-        env:
-          ImageOS: ubuntu22
-        uses: erlef/setup-elixir@v1
+        uses: erlef/setup-beam@v1
         with:
           elixir-version: ${{ matrix.elixir }}
           otp-version: ${{ matrix.otp }}
@@ -83,11 +74,7 @@ jobs:
       - name: Install dependencies
         run: mix deps.get
       - name: ExUnit tests
-        shell: sh
         env:
           MIX_ENV: test
-        run:  |
-          adduser --disabled-password --gecos '' newuser
-          chown -R newuser:newuser .
-          mix local.hex --force
-          su -c "mix coveralls.github" newuser
+          SHELL: /bin/bash
+        run: mix coveralls.github
