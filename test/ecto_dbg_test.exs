@@ -79,7 +79,47 @@ defmodule EctoDbgTest do
     end
   end
 
-  defp assert_formatted_sql(query, action, expected_sql) do
+  describe "The TestRepo.update_all_and_log" do
+    test "should return the correct SQL when a fragment is used" do
+      TestRepo.insert!(%Account{name: "hi"})
+
+      query =
+        from account in Account,
+          where: fragment("? like ?", account.name, ^"%hi%"),
+          update: [set: [name: "new"]]
+
+      expected_sql = """
+      UPDATE
+          "accounts" AS a0
+      SET
+          "name" = 'new'
+      WHERE (a0.\"name\" LIKE '%hi%')
+      """
+
+      assert_formatted_sql(query, :update_all, expected_sql)
+    end
+  end
+
+  describe "The TestRepo.delete_all_and_log" do
+    test "should return the correct SQL when a fragment is used" do
+      TestRepo.insert!(%Account{name: "hi"})
+
+      query =
+        from account in Account,
+          where: fragment("? like ?", account.name, ^"%hi%")
+
+      expected_sql = """
+      DELETE FROM "accounts" AS a0
+      WHERE (a0.\"name\" LIKE '%hi%')
+      """
+
+      assert_formatted_sql(query, :delete_all, expected_sql)
+    end
+  end
+
+  # ======== Helper functions ========
+
+  defp assert_formatted_sql(query, action, opts \\ [], expected_sql) do
     raw_log =
       capture_log(fn ->
         case action do
@@ -87,7 +127,7 @@ defmodule EctoDbgTest do
             TestRepo.all_and_log(query)
 
           :update_all ->
-            TestRepo.update_all_and_log(query)
+            TestRepo.update_all_and_log(query, opts)
 
           :delete_all ->
             TestRepo.delete_all_and_log(query)
