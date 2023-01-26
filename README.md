@@ -17,6 +17,10 @@
     src="https://img.shields.io/github/actions/workflow/status/akoutmos/ecto_dbg/main.yml?label=Build%20Status&style=for-the-badge&branch=master">
   </a>
 
+  <a href="https://coveralls.io/github/akoutmos/ecto_dbg?branch=master">
+    <img alt="Coveralls master branch" src="https://img.shields.io/coveralls/github/akoutmos/ecto_dbg/master?style=for-the-badge">
+  </a>
+
   <a href="https://github.com/sponsors/akoutmos">
     <img alt="Support the project" src="https://img.shields.io/badge/Support%20the%20project-%E2%9D%A4-lightblue?style=for-the-badge">
   </a>
