@@ -77,8 +77,8 @@ Checkout my [GitHub Sponsorship page](https://github.com/sponsors/akoutmos) if y
 
 ## Setting Up EctoDbg
 
-After adding `{:ecto_dbg, "~> 0.1.0", only: [:test, :dev]}` in your `mix.exs` file and running
-`mix deps.get`, open your `repo.ex` file and add the following contents:
+After adding `{:ecto_dbg, "~> 0.1.0"}` in your `mix.exs` file and running `mix deps.get`, open your `repo.ex` file and
+add the following contents:
 
 ```elixir
 defmodule MyApp.Repo do
@@ -86,9 +86,7 @@ defmodule MyApp.Repo do
     otp_app: :my_app,
     adapter: Ecto.Adapters.Postgres
 
-  unless Mix.env() == :prod do
-    use EctoDbg
-  end
+  use EctoDbg
 end
 ```
 
@@ -101,9 +99,7 @@ defmodule MyApp.Repo do
     otp_app: :my_app,
     adapter: Ecto.Adapters.Postgres
 
-  unless Mix.env() == :prod do
-    use EctoDbg, level: :info
-  end
+  use EctoDbg, level: :info
 end
 ```
 
@@ -114,6 +110,20 @@ is the following
 query = from user in User
 
 Repo.all_and_log(query)
+```
+
+By default the `use EctoDbg` macro will inject the debug functions into your repo module for only the `:test` and `:dev`
+`Mix.env()` environments. If you would like to override this default behaviour, you can do that by providing the `:only`
+option (this value should be a subset of the environments that you passed in your `mix.exs` file):
+
+```elixir
+defmodule MyApp.Repo do
+  use Ecto.Repo,
+    otp_app: :my_app,
+    adapter: Ecto.Adapters.Postgres
+
+  use EctoDbg, only: :dev
+end
 ```
 
 ## Attribution
