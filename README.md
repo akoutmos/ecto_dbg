@@ -31,6 +31,7 @@
 # Contents
 
 - [Installation](#installation)
+- [Example Output](#example-output)
 - [Supporting EctoDbg](#supporting-ectodbg)
 - [Setting Up EctoDbg](#setting-up-ectodbg)
 - [Attribution](#attribution)
@@ -49,6 +50,13 @@ end
 ```
 
 Documentation can be found at [https://hexdocs.pm/ecto_dbg](https://hexdocs.pm/ecto_dbg).
+
+## Example Output
+
+After setting up EctoDbg in your application you can expect the following output from your Ecto queries when using the
+EctoDbg helpers:
+
+<img align="center" src="guides/images/example_output.png" alt="EctoDbg example output">
 
 ## Supporting EctoDbg
 
