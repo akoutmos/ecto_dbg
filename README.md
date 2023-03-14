@@ -44,7 +44,7 @@ dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:ecto_dbg, "~> 0.1.0", only: [:dev, :test]}
+    {:ecto_dbg, "~> 0.2.0", only: [:dev, :test]}
   ]
 end
 ```
