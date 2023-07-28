@@ -27,12 +27,12 @@ pgFormatter::Beautify - Library for pretty-printing SQL queries
 
 =head1 VERSION
 
-Version 5.4
+Version 5.5
 
 =cut
 
 # Version of pgFormatter
-our $VERSION = '5.4';
+our $VERSION = '5.5';
 
 # Inclusion of code from Perl package SQL::Beautify
 # Copyright (C) 2009 by Jonas Kramer
@@ -810,6 +810,7 @@ sub beautify
     $self->{ '_is_in_block' } = -1;
     $self->{ '_is_in_work' } = 0;
     $self->{ '_is_in_function' } = 0;
+    $self->{ '_current_function' } = '';
     $self->{ '_is_in_statistics' } = 0;
     $self->{ '_is_in_cast' } = 0;
     $self->{ '_is_in_procedure' } = 0;
@@ -833,6 +834,7 @@ sub beautify
     $self->{ '_is_in_partition' } = 0;
     $self->{ '_is_in_over' } = 0;
     $self->{ '_is_in_policy' } = 0;
+    $self->{ '_is_in_truncate' } = 0;
     $self->{ '_is_in_using' } = 0;
     $self->{ '_and_level' } = 0;
     $self->{ '_col_count' } = 0;
@@ -920,6 +922,7 @@ sub beautify
             if (uc($last) eq 'FUNCTION' and $token =~ /^\d+$/) {
                 $self->{ '_is_in_function' }++;
 	    } elsif ($word && exists $self->{ 'dict' }->{ 'pg_functions' }{$word}) {
+		$self->{ '_current_function' } = $word;
                 $self->{ '_is_in_function' }++ if ($self->{ '_is_in_create' } != 1 or $token =~ /^CAST$/i);
             # Try to detect user defined functions
 	    } elsif ($last ne '*' and !$self->_is_keyword($token, $self->_next_token(), $last)
@@ -1608,6 +1611,44 @@ sub beautify
             $last = $self->_set_last($token, $last);
 	    next;
         }
+        elsif ($token =~ /^TRUNCATE$/i && $self->_next_token !~ /^(TABLE|ONLY|,)$/i)
+	{
+            $self->{ '_is_in_truncate' } = 1;
+            $self->_add_token( $token );
+            $last = $self->_set_last($token, $last);
+	    my $str_tmp = join(' ', @{ $self->{ '_tokens' } });
+	    $str_tmp =~ s/;.*//s;
+	    if ($str_tmp =~ / , /s)
+	    {
+                $self->_new_line($token,$last);
+                $self->_over($token,$last);
+                $self->{ '_is_in_truncate' } = 2;
+	    }
+	    next;
+        }
+        elsif ($token =~ /^(TABLE|ONLY)$/i && uc($last) eq 'TRUNCATE')
+	{
+            $self->{ '_is_in_truncate' } = 1;
+            $self->_add_token( $token );
+            $last = $self->_set_last($token, $last);
+	    my $str_tmp = join(' ', @{ $self->{ '_tokens' } });
+	    $str_tmp =~ s/;.*//s;
+	    if ($str_tmp =~ / , /s)
+	    {
+                $self->_new_line($token,$last);
+                $self->_over($token,$last);
+                $self->{ '_is_in_truncate' } = 2;
+	    }
+	    next;
+        }
+        elsif ($token =~ /^(RESTART|CASCADE)$/i && $self->{ '_is_in_truncate' } == 2)
+	{
+            $self->_new_line($token,$last);
+            $self->_back($token,$last);
+            $self->_add_token( $token );
+            $last = $self->_set_last($token, $last);
+	    next;
+        }
         elsif ($token =~ /^TRIGGER$/i and defined $last and $last =~ /^(CREATE|CONSTRAINT|REPLACE)$/i)
 	{
             $self->{ '_is_in_trigger' } = 1;
@@ -1900,6 +1941,7 @@ sub beautify
 	    $add_newline = 0 if ($self->{ '_is_in_function' } or $self->{ '_is_in_statistics' });
 	    $add_newline = 0 if (defined $self->_next_token and !$self->{ 'no_comments' } and $self->_is_comment($self->_next_token));
 	    $add_newline = 0 if (defined $self->_next_token and $self->_next_token =~ /KEYWCONST/ and $self->{ '_tokens' }[1] =~ /^(LANGUAGE|STRICT)$/i);
+	    $add_newline = 1 if ($self->{ '_is_in_truncate' });
 	    $self->_new_line($token,$last) if ($add_newline and $self->{ 'comma' } eq 'end' and ($self->{ 'comma_break' } || $self->{ '_current_sql_stmt' } ne 'INSERT'));
         }
 
@@ -1935,6 +1977,7 @@ sub beautify
             $self->{ '_is_in_type' } = 0;
             $self->{ '_is_in_domain' } = 0;
             $self->{ '_is_in_function' } = 0;
+            $self->{ '_current_function' } = '';
             $self->{ '_is_in_prodedure' } = 0;
             $self->{ '_is_in_index' } = 0;
 	    $self->{ '_is_in_statistics' } = 0;
@@ -1954,6 +1997,7 @@ sub beautify
             $self->{ '_is_in_partition' } = 0;
             $self->{ '_is_in_over' } = 0;
 	    $self->{ '_is_in_policy' } = 0;
+	    $self->{ '_is_in_truncate' } = 0;
 	    $self->{ '_is_in_trigger' } = 0;
 	    $self->{ '_is_in_using' } = 0;
 	    $self->{ '_and_level' } = 0;
@@ -2077,16 +2121,12 @@ sub beautify
 	    # Case of DISTINCT FROM clause
             if ($token =~ /^FROM$/i)
 	    {
-		    if (uc($last) eq 'DISTINCT' || $self->{ '_is_in_fetch' } || $self->{ '_is_in_alter' } || $self->{ '_is_in_conversion' })
-		    {
+		if (uc($last) eq 'DISTINCT' || $self->{ '_is_in_fetch' } || $self->{ '_is_in_alter' } || $self->{ '_is_in_conversion' })
+		{
 			$self->_add_token( $token );
 			$last = $self->_set_last($token, $last);
 			next;
-		    }
-	    }
-
-            if ($token =~ /^FROM$/i)
-	    {
+		}
                 $self->{ '_is_in_from' }++ if (!$self->{ '_is_in_function' } && !$self->{ '_is_in_partition' });
             }
 
@@ -2147,10 +2187,16 @@ sub beautify
 	    {
 		if (uc($token) eq 'FROM' and $self->{ '_is_in_sub_query' }
 				and !grep(/^\Q$last\E$/i, @extract_keywords)
-				and ($self->{ '_insert_values' } or $self->{ '_is_in_function' }))
+				and ($self->{ '_insert_values' } or $self->{ '_is_in_function' })
+				and (!$self->{ '_is_in_function' } or
+					!grep(/^$self->{ '_current_function' }$/, @have_from_clause))
+		)
 		{
                     $self->_new_line($token,$last);
 		    $self->_back($token, $last);
+		}
+		if (uc($token) eq 'FROM') {
+			$self->{ '_current_function' } = '';
 		}
                 $self->_add_token( $token );
                 $last = $self->_set_last($token, $last);
@@ -2930,6 +2976,10 @@ sub _add_token
 						or (!$self->{ '_is_in_drop_function' }
 							and !$self->{ '_is_in_create_function' }
 							and !$self->{ '_is_in_trigger' }));
+				if ($self->{ 'no_space_function' } and $token eq '(' and !$self->_is_keyword( $last_token, $token, undef ))
+				{
+					$self->{ 'content' } =~ s/$sp$//s;
+				}
 			}
 		    }
 	        }
