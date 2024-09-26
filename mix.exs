@@ -52,12 +52,13 @@ defmodule EctoDbg.MixProject do
       # Development dependencies
       {:doctor, "~> 0.21", only: :dev},
       {:ex_doc, "~> 0.34", only: :dev},
-      {:excoveralls, "~> 0.18", only: :test, runtime: false},
       {:credo, "~> 1.7", only: :dev},
       {:dialyxir, "~> 1.4", only: :dev, runtime: false},
 
       # Test dependencies
-      {:ecto_sqlite3, "~> 0.17", only: [:test]}
+      {:ecto_sqlite3, "~> 0.17", only: [:test]},
+      {:excoveralls, "~> 0.18", only: :test, runtime: false},
+      {:castore, "~> 1.0"}
     ]
   end
 
