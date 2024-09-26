@@ -34,7 +34,7 @@ defmodule EctoDbg.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      extra_applications: [:logger, :erlexec]
+      extra_applications: [:logger]
     ]
   end
 
@@ -46,19 +46,18 @@ defmodule EctoDbg.MixProject do
     [
       # Required dependencies
       {:ecto_sql, "~> 3.7"},
-      {:ecto_dev_logger, "~> 0.8.0"},
-      {:erlexec, "~> 2.0"},
+      {:ecto_dev_logger, "~> 0.13"},
+      {:rustler, "~> 0.34.0"},
 
       # Development dependencies
-      {:doctor, "~> 0.21.0", only: :dev},
-      {:ex_doc, "~> 0.29.1", only: :dev},
-      {:excoveralls, "~> 0.15.3", only: :test, runtime: false},
-      {:credo, "~> 1.6.1", only: :dev},
-      {:dialyxir, "~> 1.2.0", only: :dev, runtime: false},
-      {:git_hooks, "~> 0.7.3", only: [:test, :dev], runtime: false},
+      {:doctor, "~> 0.21", only: :dev},
+      {:ex_doc, "~> 0.34", only: :dev},
+      {:excoveralls, "~> 0.18", only: :test, runtime: false},
+      {:credo, "~> 1.7", only: :dev},
+      {:dialyxir, "~> 1.4", only: :dev, runtime: false},
 
       # Test dependencies
-      {:ecto_sqlite3, "~> 0.9.1", only: [:test]}
+      {:ecto_sqlite3, "~> 0.17", only: [:test]}
     ]
   end
 
