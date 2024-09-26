@@ -1,4 +1,6 @@
 defmodule EctoDbg.SQLFormatter do
+  @moduledoc false
+
   use Rustler,
     otp_app: :ecto_dbg,
     crate: :sql_formatter
