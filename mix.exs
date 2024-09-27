@@ -76,7 +76,7 @@ defmodule EctoDbg.MixProject do
   defp package do
     [
       name: "ecto_dbg",
-      files: ~w(lib priv mix.exs README.md LICENSE CHANGELOG.md),
+      files: ~w(lib mix.exs README.md LICENSE CHANGELOG.md native),
       licenses: ["MIT"],
       maintainers: ["Alex Koutmos"],
       links: %{
