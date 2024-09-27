@@ -2,6 +2,7 @@ Logger.configure(level: :info)
 
 Application.put_env(:ecto, :primary_key_type, :id)
 Application.put_env(:ecto, :async_integration_tests, false)
+Application.put_env(:logger, :default_formatter, truncate: :infinity)
 
 ecto = Mix.Project.deps_paths()[:ecto]
 Code.require_file("#{ecto}/integration_test/support/schemas.exs", __DIR__)

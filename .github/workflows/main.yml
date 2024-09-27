@@ -6,9 +6,9 @@ env:
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
   pull_request:
-    branches: [ master ]
+    branches: [master]
 
 jobs:
   static_analysis:
@@ -21,8 +21,8 @@ jobs:
       - name: Set up Elixir
         uses: erlef/setup-elixir@v1
         with:
-          elixir-version: '1.13.3'
-          otp-version: '24.2'
+          elixir-version: "1.13.3"
+          otp-version: "24.2"
       - name: Restore dependencies cache
         uses: actions/cache@v2
         with:
@@ -53,9 +53,9 @@ jobs:
     strategy:
       matrix:
         elixir:
-          - '1.13.3'
+          - "1.13.3"
         otp:
-          - '24.2'
+          - "24.2"
 
     steps:
       - name: Checkout code
@@ -74,7 +74,4 @@ jobs:
       - name: Install dependencies
         run: mix deps.get
       - name: ExUnit tests
-        env:
-          MIX_ENV: test
-          SHELL: /bin/bash
         run: mix coveralls.github
