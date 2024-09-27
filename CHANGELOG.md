@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.0] - 2024-09-27
+
+### Changed
+
+- Switched to Rustler NIF that wraps [sqlformat-rs](https://github.com/shssoichiro/sqlformat-rs) instead of Perl script
+  which was choking on larger queries.
+
 ## [0.2.0] - 2023-01-28
 
 ### Added

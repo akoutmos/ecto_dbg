@@ -134,6 +134,9 @@ defmodule MyApp.Repo do
 end
 ```
 
+If your queries are especially large, make sure you update your Logger configuration to [support large log
+messages](https://hexdocs.pm/logger/1.17.3/Logger.Formatter.html#new/1). Specifically the `:truncate` option.
+
 ## Attribution
 
 - EctoDbg builds upon the [EctoDevLogger](https://github.com/fuelen/ecto_dev_logger) package and has reused some of the
