@@ -5,20 +5,13 @@ defmodule EctoDbg do
   query. Once you `use` this module in your Repo module, you'll be able to
   call the injected functions with your query and you can see the formatted
   SQL that Ecto generates.
-
-  > #### Warning {: .warning}
-  >
-  > This library makes use of [pgFormatter](https://github.com/darold/pgFormatter)
-  > (which is a Perl script) in order to format your SQL queries. This is meant to
-  > be a tool that is used during development and should probably not be shipped
-  > with your production application. It is recommended that you add this library
-  > as only a dev/test dependency.
   """
 
   require Logger
 
   alias Ecto.Adapters.SQL
   alias Ecto.DevLogger.PrintableParameter
+  alias EctoDbg.SQLFormatter
 
   @doc """
   By using this macro in your Repo module, you will get 6 additional functions added
@@ -134,15 +127,18 @@ defmodule EctoDbg do
     {binary_query, params} = SQL.to_sql(normalized_action, repo, query)
 
     # Generate a formatted query
-    formatted_sql =
+    formatted_log_message =
       binary_query
       |> inline_params(params, repo.__adapter__())
-      |> format_sql()
-      |> format_log_message()
+      |> SQLFormatter.format()
+      |> case do
+        {:ok, formatted_sql} ->
+          format_log_message(formatted_sql)
+      end
 
     # Log the query
     {logger_module, logger_function} = Keyword.fetch!(dbg_opts, :logger_function)
-    apply(logger_module, logger_function, [repo, action, formatted_sql, dbg_opts])
+    apply(logger_module, logger_function, [repo, action, formatted_log_message, dbg_opts])
 
     :ok
   end
@@ -261,67 +257,6 @@ defmodule EctoDbg do
       {[elem, formatted_value], index + 1}
     end)
     |> elem(0)
-  end
-
-  @doc false
-  def format_sql(raw_sql) do
-    {:ok, pid, os_pid} =
-      :ecto_dbg
-      |> :code.priv_dir()
-      |> Path.join("/pg_format")
-      |> :exec.run([
-        :stdin,
-        :stdout,
-        :stderr,
-        :monitor
-      ])
-
-    :exec.send(pid, raw_sql)
-    :exec.send(pid, :eof)
-
-    # Initial state for reduce
-    initial_reduce_results = %{
-      stdout: "",
-      stderr: []
-    }
-
-    result =
-      [nil]
-      |> Stream.cycle()
-      |> Enum.reduce_while(initial_reduce_results, fn _, acc ->
-        receive do
-          {:DOWN, ^os_pid, _, ^pid, {:exit_status, exit_status}} when exit_status != 0 ->
-            error = "pg_format exited with status code #{inspect(exit_status)}"
-            existing_errors = Map.get(acc, :stderr, [])
-            {:halt, Map.put(acc, :stderr, [error | existing_errors])}
-
-          {:DOWN, ^os_pid, _, ^pid, _} ->
-            {:halt, acc}
-
-          {:stderr, ^os_pid, error} ->
-            error = String.trim(error)
-            existing_errors = Map.get(acc, :stderr, [])
-            {:cont, Map.put(acc, :stderr, [error | existing_errors])}
-
-          {:stdout, ^os_pid, compiled_template_fragment} ->
-            aggregated_template = Map.get(acc, :stdout, "")
-            {:cont, Map.put(acc, :stdout, aggregated_template <> compiled_template_fragment)}
-        after
-          10_000 ->
-            :exec.kill(os_pid, :sigterm)
-            error = "pg_format timed out after 10 second(s)"
-            existing_errors = Map.get(acc, :stderr, [])
-            {:halt, Map.put(acc, :stderr, [error | existing_errors])}
-        end
-      end)
-
-    case result do
-      %{stderr: [], stdout: formatted_sql} ->
-        formatted_sql
-
-      %{stderr: errors} ->
-        {:error, Enum.join(errors, "\n")}
-    end
   end
 
   defp placeholder_with_number_regex(Ecto.Adapters.Postgres), do: ~r/\$\d+/

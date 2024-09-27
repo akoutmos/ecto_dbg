@@ -139,4 +139,5 @@ end
 - EctoDbg builds upon the [EctoDevLogger](https://github.com/fuelen/ecto_dev_logger) package and has reused some of the
   code in that project to achieve a slightly different goal.
 - The logo for the project is an edited version of an SVG image from the [unDraw project](https://undraw.co/).
-- The EctoDbg library wraps [pgFormatter](https://github.com/darold/pgFormatter) in order to provide SQL formatting.
+- The EctoDbg library leans on the Rust library [sqlformat-rs](https://github.com/shssoichiro/sqlformat-rs) for SQL
+  statement formatting.

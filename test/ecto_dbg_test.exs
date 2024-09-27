@@ -4,9 +4,6 @@ defmodule EctoDbgTest do
   alias Ecto.Integration.TestRepo
 
   alias EctoDbgTest.Account
-  alias EctoDbgTest.AccountUser
-  alias EctoDbgTest.Product
-  alias EctoDbgTest.User
 
   import Ecto.Query
   import ExUnit.CaptureLog
@@ -26,7 +23,8 @@ defmodule EctoDbgTest do
           a0."updated_at"
       FROM
           "accounts" AS a0
-      WHERE (a0."name" = 'hi')
+      WHERE
+          (a0."name" = 'hi')
       """
 
       assert_formatted_sql(query, :all, expected_sql)
@@ -71,7 +69,8 @@ defmodule EctoDbgTest do
       FROM
           "accounts" AS a0
           LEFT OUTER JOIN "products" AS p1 ON p1."account_id" = a0."id"
-      WHERE (a0.\"name\" LIKE '%hi%')
+      WHERE
+          ((a0.\"name\" LIKE '%hi%'))
           OR (a0.\"name\" LIKE '%bye%')
       """
 
@@ -93,7 +92,8 @@ defmodule EctoDbgTest do
           "accounts" AS a0
       SET
           "name" = 'new'
-      WHERE (a0.\"name\" LIKE '%hi%')
+      WHERE
+          (a0.\"name\" LIKE '%hi%')
       """
 
       assert_formatted_sql(query, :update_all, expected_sql)
@@ -109,8 +109,10 @@ defmodule EctoDbgTest do
           where: fragment("? like ?", account.name, ^"%hi%")
 
       expected_sql = """
-      DELETE FROM "accounts" AS a0
-      WHERE (a0.\"name\" LIKE '%hi%')
+      DELETE FROM
+          "accounts" AS a0
+      WHERE
+          (a0.\"name\" LIKE '%hi%')
       """
 
       assert_formatted_sql(query, :delete_all, expected_sql)
