@@ -56,9 +56,9 @@ defmodule EctoDbg.MixProject do
       {:dialyxir, "~> 1.4", only: :dev, runtime: false},
 
       # Test dependencies
-      {:ecto_sqlite3, "~> 0.17", only: [:test]},
+      {:ecto_sqlite3, "~> 0.17", only: :test},
       {:excoveralls, "~> 0.18", only: :test, runtime: false},
-      {:castore, "~> 1.0"}
+      {:castore, "~> 1.0", only: :test}
     ]
   end
 
