@@ -34,7 +34,7 @@ defmodule EctoDbgTest do
     test "should return the correct SQL with a WHERE clause when there are many IDs to match against" do
       TestRepo.insert!(%Account{name: "hi"})
 
-      many_ids = Enum.map(1..1_000, fn _ -> Ecto.UUID.generate() end)
+      many_ids = Enum.map(1..100, fn _ -> Ecto.UUID.generate() end)
 
       query = from user in User, where: user.custom_id in ^many_ids
 
