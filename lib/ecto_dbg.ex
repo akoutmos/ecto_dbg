@@ -5,14 +5,6 @@ defmodule EctoDbg do
   query. Once you `use` this module in your Repo module, you'll be able to
   call the injected functions with your query and you can see the formatted
   SQL that Ecto generates.
-
-  > #### Warning {: .warning}
-  >
-  > This library makes use of [pgFormatter](https://github.com/darold/pgFormatter)
-  > (which is a Perl script) in order to format your SQL queries. This is meant to
-  > be a tool that is used during development and should probably not be shipped
-  > with your production application. It is recommended that you add this library
-  > as only a dev/test dependency.
   """
 
   require Logger
