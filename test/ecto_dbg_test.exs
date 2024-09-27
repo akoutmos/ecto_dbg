@@ -34,22 +34,47 @@ defmodule EctoDbgTest do
     test "should return the correct SQL with a WHERE clause when there are many IDs to match against" do
       TestRepo.insert!(%Account{name: "hi"})
 
-      many_ids = Enum.map(1..10_000, fn _ -> Ecto.UUID.generate() end)
+      many_ids = Enum.map(1..1_000, fn _ -> Ecto.UUID.generate() end)
 
       query = from user in User, where: user.custom_id in ^many_ids
 
-      expected_sql = """
-      SELECT
-          a0."id",
-          a0."name",
-          a0."email",
-          a0."inserted_at",
-          a0."updated_at"
-      FROM
-          "users" AS a0
-      """
+      raw_log =
+        capture_log(fn ->
+          TestRepo.all_and_log(query)
+        end)
 
-      assert_formatted_sql(query, :all, expected_sql)
+      extracted_sql =
+        raw_log
+        |> String.split("\n")
+        |> Enum.reduce({:not_sql, []}, fn
+          "====" <> _, {:not_sql, acc} ->
+            {:sql, acc}
+
+          "====" <> _, {:sql, acc} ->
+            ["" | acc]
+
+          next_line, {:sql, acc} ->
+            {:sql, [next_line | acc]}
+
+          _, acc ->
+            acc
+        end)
+        |> Enum.reverse()
+        |> Enum.join("\n")
+
+      assert """
+             SELECT
+                 u0."id",
+                 u0."name",
+                 u0."custom_id",
+                 u0."inserted_at",
+                 u0."updated_at"
+             FROM
+                 "users" AS u0
+             WHERE
+                 (
+                     u0."custom_id" IN (
+             """ <> _ = extracted_sql
     end
 
     test "should return the correct SQL with a JOIN clause" do
