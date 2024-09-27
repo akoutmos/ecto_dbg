@@ -36,6 +36,7 @@ defmodule EctoDbgTest.User do
 
   schema "users" do
     field(:name, :string)
+    field(:custom_id, Ecto.UUID)
 
     timestamps()
 

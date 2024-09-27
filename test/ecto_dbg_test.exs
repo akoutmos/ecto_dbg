@@ -4,6 +4,7 @@ defmodule EctoDbgTest do
   alias Ecto.Integration.TestRepo
 
   alias EctoDbgTest.Account
+  alias EctoDbgTest.User
 
   import Ecto.Query
   import ExUnit.CaptureLog
@@ -25,6 +26,27 @@ defmodule EctoDbgTest do
           "accounts" AS a0
       WHERE
           (a0."name" = 'hi')
+      """
+
+      assert_formatted_sql(query, :all, expected_sql)
+    end
+
+    test "should return the correct SQL with a WHERE clause when there are many IDs to match against" do
+      TestRepo.insert!(%Account{name: "hi"})
+
+      many_ids = Enum.map(1..10_000, fn _ -> Ecto.UUID.generate() end)
+
+      query = from user in User, where: user.custom_id in ^many_ids
+
+      expected_sql = """
+      SELECT
+          a0."id",
+          a0."name",
+          a0."email",
+          a0."inserted_at",
+          a0."updated_at"
+      FROM
+          "users" AS a0
       """
 
       assert_formatted_sql(query, :all, expected_sql)
