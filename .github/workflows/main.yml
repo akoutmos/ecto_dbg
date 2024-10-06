@@ -21,8 +21,8 @@ jobs:
       - name: Set up Elixir
         uses: erlef/setup-elixir@v1
         with:
-          elixir-version: "1.13.3"
-          otp-version: "24.2"
+          elixir-version: "1.17.3"
+          otp-version: "27.1"
       - name: Restore dependencies cache
         uses: actions/cache@v2
         with:
@@ -53,9 +53,9 @@ jobs:
     strategy:
       matrix:
         elixir:
-          - "1.13.3"
+          - "1.17.3"
         otp:
-          - "24.2"
+          - "27.1"
 
     steps:
       - name: Checkout code
