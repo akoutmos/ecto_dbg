@@ -11,7 +11,6 @@ defmodule EctoDbg do
 
   alias Ecto.Adapters.SQL
   alias Ecto.DevLogger.PrintableParameter
-  alias EctoDbg.SQLFormatter
 
   @doc """
   By using this macro in your Repo module, you will get 6 additional functions added
@@ -130,7 +129,7 @@ defmodule EctoDbg do
     formatted_log_message =
       binary_query
       |> inline_params(params, repo.__adapter__())
-      |> SQLFormatter.format()
+      |> SqlFmt.format_query(indent: 4)
       |> case do
         {:ok, formatted_sql} ->
           format_log_message(formatted_sql)

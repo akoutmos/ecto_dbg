@@ -24,6 +24,3 @@ ecto_dbg-*.tar
 
 # Temporary files, for example, from tests.
 /tmp/
-
-# Rustler built artifacts
-/priv/native/*.so

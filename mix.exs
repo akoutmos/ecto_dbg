@@ -47,7 +47,7 @@ defmodule EctoDbg.MixProject do
       # Required dependencies
       {:ecto_sql, "~> 3.7"},
       {:ecto_dev_logger, "~> 0.13"},
-      {:rustler, "~> 0.34.0"},
+      {:sql_fmt, "~> 0.1.0"},
 
       # Development dependencies
       {:doctor, "~> 0.21", only: :dev},
@@ -57,8 +57,7 @@ defmodule EctoDbg.MixProject do
 
       # Test dependencies
       {:ecto_sqlite3, "~> 0.17", only: :test},
-      {:excoveralls, "~> 0.18", only: :test, runtime: false},
-      {:castore, "~> 1.0", only: :test}
+      {:excoveralls, "~> 0.18", only: :test, runtime: false}
     ]
   end
 
@@ -76,7 +75,7 @@ defmodule EctoDbg.MixProject do
   defp package do
     [
       name: "ecto_dbg",
-      files: ~w(lib mix.exs README.md LICENSE CHANGELOG.md native),
+      files: ~w(lib mix.exs README.md LICENSE CHANGELOG.md),
       licenses: ["MIT"],
       maintainers: ["Alex Koutmos"],
       links: %{
