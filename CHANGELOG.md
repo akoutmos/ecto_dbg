@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.0] - 2024-10-06
+
+### Changed
+
+- Switched to precompiled Rustler NIF [sql_fmt](https://github.com/akoutmos/sql_fmt).
+
 ## [0.3.0] - 2024-09-27
 
 ### Changed

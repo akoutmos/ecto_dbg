@@ -44,7 +44,7 @@ dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:ecto_dbg, "~> 0.2.0"}
+    {:ecto_dbg, "~> 0.4.0"}
   ]
 end
 ```
@@ -143,4 +143,4 @@ messages](https://hexdocs.pm/logger/1.17.3/Logger.Formatter.html#new/1). Specifi
   code in that project to achieve a slightly different goal.
 - The logo for the project is an edited version of an SVG image from the [unDraw project](https://undraw.co/).
 - The EctoDbg library leans on the Rust library [sqlformat-rs](https://github.com/shssoichiro/sqlformat-rs) for SQL
-  statement formatting.
+  statement formatting. This is done through a Ruslter NIF I maintain called [sql_fmt](https://github.com/akoutmos/sql_fmt).

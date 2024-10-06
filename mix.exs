@@ -4,8 +4,8 @@ defmodule EctoDbg.MixProject do
   def project do
     [
       app: :ecto_dbg,
-      version: "0.3.0",
-      elixir: "~> 1.12",
+      version: "0.4.0",
+      elixir: "~> 1.16",
       name: "EctoDbg",
       source_url: "https://github.com/akoutmos/ecto_dbg",
       homepage_url: "https://hex.pm/packages/ecto_dbg",
