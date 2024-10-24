@@ -4,7 +4,7 @@ defmodule EctoDbg.MixProject do
   def project do
     [
       app: :ecto_dbg,
-      version: "0.4.0",
+      version: "0.5.0",
       elixir: "~> 1.16",
       name: "EctoDbg",
       source_url: "https://github.com/akoutmos/ecto_dbg",
@@ -46,8 +46,8 @@ defmodule EctoDbg.MixProject do
     [
       # Required dependencies
       {:ecto_sql, "~> 3.7"},
-      {:ecto_dev_logger, "~> 0.13"},
-      {:sql_fmt, "~> 0.1.0"},
+      {:ecto_dev_logger, "~> 0.14"},
+      {:sql_fmt, "~> 0.2.0"},
 
       # Development dependencies
       {:doctor, "~> 0.21", only: :dev},
